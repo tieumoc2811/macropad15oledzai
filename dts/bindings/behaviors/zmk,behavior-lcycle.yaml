@@ -1,0 +1,13 @@
+description: |
+  Chuyen vong layer moi lan bam: Base -> Numpad -> Media -> Nokia ...
+  (theo thu tu trong property "layers", cac gia tri la layer index)
+
+compatible: "zmk,behavior-lcycle"
+
+include: zero_param.yaml
+
+properties:
+  layers:
+    type: array
+    required: true
+    description: Danh sach layer index de chuyen vong

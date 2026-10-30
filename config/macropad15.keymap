@@ -1,0 +1,162 @@
+/*
+ * Macropad15 - keymap cho ZMK firmware
+ * Chuyen tu QMK/Vial: 15 phim + 3 nut nhan encoder (vi tri 15, 16, 17).
+ *
+ * Thu tu vi tri (giong LAYOUT QMK):
+ *      (ENC1)         k0   k1   k2   k3   k4
+ *   (ENC2)  (ENC3)    k5   k6   k7   k8   k9
+ *                     k10  k11  k12  k13  k14
+ *
+ * Layer: 0 Base | 1 Layer1 | 2 Numpad | 3 Media | 4 Nokia | 5 FN
+ * Nut nhan ENC1 = &lcycle (doi vong Base -> Numpad -> Media -> Nokia).
+ */
+
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    /* ----- Cac behavior custom cua Macropad15 (code C trong module) ----- */
+    behaviors {
+        lcycle: lcycle {
+            compatible = "zmk,behavior-lcycle";
+            #binding-cells = <0>;
+            display-name = "Layer Cycle";
+            /* Layer index: Base -> Numpad -> Media -> Nokia */
+            layers = <0 2 3 4>;
+        };
+
+        nokia: nokia_multitap {
+            compatible = "zmk,behavior-nokia-multitap";
+            #binding-cells = <1>;
+            display-name = "Nokia";
+        };
+
+        th_key: tap_hold_key {
+            compatible = "zmk,behavior-tap-hold-key";
+            #binding-cells = <2>;
+            display-name = "Tap-Hold";
+            tapping-term-ms = <200>;
+        };
+
+        /* Bam F1 roi F2 (giong ban ESP32-C3) */
+        seq_f1f2: seq_f1f2 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "F1 F2";
+            bindings = <&kp F1 &kp F2>;
+        };
+
+        /* Bam F11 roi Page Up */
+        seq_f11pu: seq_f11pu {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "F11 PgUp";
+            bindings = <&kp F11 &kp PG_UP>;
+        };
+
+        /* Bam F11 roi Page Down */
+        seq_f11pd: seq_f11pd {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            display-name = "F11 PgDn";
+            bindings = <&kp F11 &kp PG_DN>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        /* ===== Layer 0: Base ===== */
+        base_layer {
+            display-name = "Base";
+            bindings = <
+                &kp A     &kp B   &kp C     &kp D   &kp E
+                &kp F     &kp G   &kp H     &kp I   &kp J
+                &kp K     &kp L   &kp M     &kp N   &kp O
+                &lcycle   &kp BSPC  &kp TAB
+            >;
+            /* ENC1: volume, ENC2: trai/phai, ENC3: len/xuong */
+            sensor-bindings =
+                <&inc_dec_kp C_VOL_UP C_VOL_DN>,
+                <&inc_dec_kp RIGHT LEFT>,
+                <&inc_dec_kp DOWN UP>;
+        };
+
+        /* ===== Layer 1: Layer1 (giong ban ESP32-C3) ===== */
+        fn1_layer {
+            display-name = "Layer1";
+            bindings = <
+                &kp V     &kp C   &kp X        &kp Z        &kp UP
+                &kp SLSH  &kp DOT &kp COMMA    &kp M        &kp LSHIFT
+                &to 0     &seq_f1f2  &seq_f11pu  &seq_f11pd  &kp DEL
+                &trans    &trans  &trans
+            >;
+            /* QMK de TRNS -> lay binding cua layer mac dinh */
+            sensor-bindings =
+                <&inc_dec_kp C_VOL_UP C_VOL_DN>,
+                <&inc_dec_kp RIGHT LEFT>,
+                <&inc_dec_kp DOWN UP>;
+        };
+
+        /* ===== Layer 2: Numpad ===== */
+        numpad_layer {
+            display-name = "Numpad";
+            bindings = <
+                &kp KP_N7  &kp KP_N8  &kp KP_N9  &th_key KP_MINUS KP_DIVIDE  &mo 5
+                &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp KP_ENTER                &th_key KP_PLUS KP_MULTIPLY
+                &kp KP_N1  &kp KP_N2  &kp KP_N3  &kp KP_N0                   &kp KP_DOT
+                &lcycle    &kp BSPC   &kp TAB
+            >;
+            sensor-bindings =
+                <&inc_dec_kp C_VOL_UP C_VOL_DN>,
+                <&inc_dec_kp RIGHT LEFT>,
+                <&inc_dec_kp DOWN UP>;
+        };
+
+        /* ===== Layer 3: Media ===== */
+        media_layer {
+            display-name = "Media";
+            bindings = <
+                &kp C_PREV  &kp C_PLAY_PAUSE  &kp C_NEXT  &kp C_AL_CALC  &mo 5
+                &kp HOME    &kp UP            &kp END     &kp C_VOL_DN   &kp C_VOL_UP
+                &kp LEFT    &kp DOWN          &kp RIGHT   &kp PG_UP      &kp PG_DN
+                &lcycle     &kp DEL           &kp ENTER
+            >;
+            /* QMK: ENC2 = bai truoc/sau, ENC3 = PgUp/PgDn */
+            sensor-bindings =
+                <&inc_dec_kp C_VOL_UP C_VOL_DN>,
+                <&inc_dec_kp C_NEXT C_PREV>,
+                <&inc_dec_kp PG_DN PG_UP>;
+        };
+
+        /* ===== Layer 4: Nokia multitap ===== */
+        nokia_layer {
+            display-name = "Nokia";
+            bindings = <
+                &nokia 7   &nokia 8  &nokia 9  &caps_word  &mo 5
+                &nokia 4   &nokia 5  &nokia 6  &kp ENTER   &sk LSHIFT
+                &nokia 1   &nokia 2  &nokia 3  &nokia 0    &nokia 10
+                &lcycle    &kp BSPC  &kp TAB
+            >;
+            sensor-bindings =
+                <&inc_dec_kp C_VOL_UP C_VOL_DN>,
+                <&inc_dec_kp RIGHT LEFT>,
+                <&inc_dec_kp DOWN UP>;
+        };
+
+        /* ===== Layer 5: FN ===== */
+        fn_layer {
+            display-name = "FN";
+            bindings = <
+                &kp F1     &kp F2   &kp F3    &kp F4       &trans
+                &kp F5     &kp F6   &kp F7    &sys_reset   &bootloader
+                &kp F8     &kp F9   &kp F10   &kp F11      &kp F12
+                &kp C_MUTE &none    &none
+            >;
+            sensor-bindings =
+                <&inc_dec_kp C_VOL_UP C_VOL_DN>,
+                <&inc_dec_kp RIGHT LEFT>,
+                <&inc_dec_kp DOWN UP>;
+        };
+    };
+};

@@ -1,0 +1,13 @@
+description: |
+  Bam ngan = phim 1, bam giu (qua tapping term) = phim 2.
+  Vi du: &th_key KP_MINUS KP_DIVIDE (bam "-", giu "/")
+
+compatible: "zmk,behavior-tap-hold-key"
+
+include: two_param.yaml
+
+properties:
+  tapping-term-ms:
+    type: int
+    default: 200
+    description: Thoi gian phan biet bam ngan va bam giu (ms)

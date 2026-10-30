@@ -1,0 +1,26 @@
+# Kconfig cua module macropad15 (code C custom: behaviors + man hinh).
+# Workflow build ZMK tu dong them repo nay vao bang ZEPHYR_EXTRA_MODULES
+# khi thay file zephyr/module.yml o goc repo.
+
+config ZMK_MACROPAD15
+    bool "Macropad15 custom behaviors (layer cycle, Nokia multitap, tap-hold)"
+    default y
+
+config ZMK_MACROPAD15_STATUS_SCREEN
+    bool "Macropad15 custom status screen (layer + phim vua bam)"
+    default y
+    depends on ZMK_MACROPAD15 && ZMK_DISPLAY
+    select LV_FONT_MONTSERRAT_16
+    select LV_FONT_MONTSERRAT_32
+
+if ZMK_MACROPAD15
+
+config MACROPAD15_TAPPING_TERM_MS
+    int "Thoi gian phan biet bam/giu cho phim tap-hold (ms)"
+    default 200
+
+config MACROPAD15_NOKIA_MULTITAP_MS
+    int "Cua so doi ky tu Nokia multitap (ms)"
+    default 600
+
+endif # ZMK_MACROPAD15

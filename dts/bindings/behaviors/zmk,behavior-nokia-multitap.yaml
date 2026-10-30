@@ -1,0 +1,8 @@
+description: |
+  Nokia multitap: bam lien tiep cung phim trong cua so multitap de doi ky tu
+  (1abc, 2def, ..., 9yz, 0 va khoang cach, . , ? !).
+  param1: 1..9 = chu so, 0 = so 0 + khoang cach, 10 = dau . , ? !
+
+compatible: "zmk,behavior-nokia-multitap"
+
+include: one_param.yaml

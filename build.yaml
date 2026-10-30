@@ -1,0 +1,5 @@
+# File sinh ma tran build cho GitHub Actions.
+# Board: SparkFun Pro Micro RP2040, shield: macropad15 (dinh nghia trong boards/shields/macropad15)
+include:
+  - board: sparkfun_pro_micro_rp2040
+    shield: macropad15

@@ -1,0 +1,10 @@
+file_format: "1"
+id: macropad15
+name: Macropad15
+type: shield
+url: https://github.com/chipgenni
+requires: [pro_micro]
+features:
+  - keys
+  - encoder
+  - display
